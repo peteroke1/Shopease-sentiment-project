@@ -1,4 +1,4 @@
-from utils.model_utils import load_regirstered_model
+from utils.model_utils import load_registered_model
 from src.data_cleaning import DataCleaning
 import logging
 
@@ -9,7 +9,7 @@ logging.basicConfig(
 
 class predict_sentiment:
     def __init__(self):
-        self.pipeline = load_regirstered_model()
+        self.pipeline = load_registered_model()
         #define the label mapping
         self.id2label = {0: "negative", 1: "neutral", 2: "positive"}
 

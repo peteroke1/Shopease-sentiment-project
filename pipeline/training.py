@@ -24,4 +24,3 @@ def train_and_evaluate():
     except Exception as e:
             logging.error(f"error occurred while training the model {e}")
        
-train_and_evaluate()

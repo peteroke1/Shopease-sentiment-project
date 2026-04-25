@@ -21,7 +21,7 @@ class model_pusher:
            mlflow.set_experiment(experiment_name)
            logging.info(f"Model pusher has been successfully initialized..")
        except Exception as e:
-           logging.error("error occurred while initializing model_pusher {e}")
+           logging.error(f"error occurred while initializing model_pusher {e}")
 
     def updated_model_pusher(self, trainer, metrics):
         try:
@@ -29,14 +29,15 @@ class model_pusher:
             old_f1 = get_best_f1(self.experiment_name)
 
             print(f"New f1 score: {new_f1}")
-            print("f Old f1 score: {old_f1}")
+            print(f"Old f1 score: {old_f1}")
 
             if old_f1 is None or new_f1 > old_f1:
                 with mlflow.start_run():
 
                     #log the metrics
-                    mlflow.log_metrics("accuracy", metrics["eval_accuracy"])
-                    mlflow.log_metrics("fi", new_f1)
+                    #mlflow.log_metrics("accuracy", metrics["eval_accuracy"])
+                    #mlflow.log_metrics("fi", new_f1)
+                    mlflow.log_metrics({"accuracy": metrics["eval_accuracy"], "f1": new_f1})
 
                     #log the parameters
                     mlflow.log_param("model_name", model_name)
@@ -46,15 +47,16 @@ class model_pusher:
 
                     # Create a pipeline
                     sentiment_pipeline = pipeline(
-                        task = "task-classification",
+                        task = "text-classification",
                         model = trainer.model,
                         tokenizer = model_name,
-                        return_all_score = True
+                        return_all_scores = True
                     )
 
                     #log the model with the tokenizer
                     mlflow.transformers.log_model(
-                        artifact_path = model,
+                        transformers_model=sentiment_pipeline,  # ← missing
+                        artifact_path = "model",
                         registered_model_name = model_name
                     )
                 logging.info(f"Model and metrics have been successfully pushed to mlflow..")
