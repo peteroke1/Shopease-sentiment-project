@@ -21,7 +21,7 @@ class TextRequest(BaseModel):
 predictor = predict_sentiment()
 logging.info(f"model successfully loaded")
 
-app.host("/predict_sentiment")
+app.post("/predict_sentiment")
 def predict_text(request: TextRequest):
     try:
         result = predictor.predict(request.text)
@@ -31,7 +31,7 @@ def predict_text(request: TextRequest):
     except Exception as e:
         logging.error(f"error occurred while predicting the sentiment {e}")
 
-app.post("/predict/batch")
+app.get("/predict/batch")
 async def predict_batch(file: UploadFile = File(...)):
     contents = await file.read
 
